@@ -34,7 +34,7 @@ userSchema.pre('save', async function(next){
         this.password = await argon2.hash(this.password);
         next();
        } catch (error) {
-          console.log(error); 
+          // console.log(error); 
           return next(error);
        }
     }

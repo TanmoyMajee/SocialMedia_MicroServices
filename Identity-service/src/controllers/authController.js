@@ -2,7 +2,7 @@
 const logger = require('../utils/logger');
 const validateRegistration = require('../utils/validation').validateRegistration;
 const User = require('../models/User'); 
-const { generateToken } = require('../utils/token');
+const  generateToken  = require('../utils/generateToken');
 // User Registration
 
 const registerUser = async (req,res) => {
@@ -10,7 +10,7 @@ const registerUser = async (req,res) => {
     try {
       const {error} = validateRegistration(req.body);
       if(error) {
-        // console.log('Validation error:', error);
+       //validateRegistration is used for req body validation useing Joi  
         logger.warn('Validation error:', error.details[0].message);
         return res.status(400).json({
         // error: error,

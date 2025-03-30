@@ -4,11 +4,16 @@ const Post = require('../models/Post');
 const createPost = async (req, res) => {
   logger.info(' Post endpoint hit');
   try {
-    const { content, mediaIds } = req.body;
+    const {error,value} = createPostValidation(req.body);
+    if(error){
+      logger.error('Validation error in creating post:', error);
+      return res.status(400).json({message : error.details[0].message , success : false});
+    }
+    const {content,mediaIds} = value;
     const newPost = new Post({
-      user: req.user._id,
+      user: req.userId,
       content,
-      mediaIds
+      mediaIds : mediaIds || []
     })
     await newPost.save();
     logger.info('Post created successfully');

@@ -9,6 +9,7 @@ const {rateLimit} = require('express-rate-limit');
 // const {RateLimiterRedis} = require('rate-limiter-flexible');
 const {RedisStore} = require('rate-limit-redis');
 const proxy = require('express-http-proxy');
+const {validateToken} = require('./middleware/authMiddleware');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -70,12 +71,42 @@ const proxyOptions = {
 app.use('/v1/auth', proxy(process.env.IDENTITY_SERVICE_URL, proxyOptions));
 
 
+
+
+// setting up proxy for post service
+
+const proxOptionsPostService = {
+  proxyReqPathResolver: (req) => {
+    return req.originalUrl.replace(/^\/v1/, '/api');
+  },
+  proxyErrorHandler: (err, res, next) => {
+    logger.error('Proxy error: ', err);
+    res.status(500).json({ success: false, message: 'Proxy error' });
+  },
+  proxyReqOptDecorator: (proxyReqOpts, srcReq) => {
+    // we got the user if from srcReq.user || srcReq is the request of original request [ httpp://localhost:3000/v1/posts  ]
+    // so we check the user id from the auth middleware and send it to the post service
+    proxyReqOpts.headers['Content-Type'] = 'application/json';
+    proxyReqOpts.headers['x-user-id'] = srcReq.user._id;  // we are sending the user id from the auth middleware to the post service 
+    // by setting the x-user-id header, we are sending the user id to the post service
+    return proxyReqOpts;
+  },
+  userResDecorator: (proxyRes, proxyResData, userReq, userRes) => {
+    logger.info('Response from Post service: ', proxyResData);
+    return proxyResData;
+  }
+}
+
+// here we need to pass the request to authMiddleware first and then to the proxy
+app.use('/v1/posts', validateToken, proxy(process.env.POST_SERVICE_URL, proxOptionsPostService));
+
 app.use(errorHandler);
 
 app.listen(PORT, () => {
   logger.info(`Api gateway is running on port ${PORT}`);
   logger.info(`Identity service is running on port ${process.env.IDENTITY_SERVICE_URL}`);
   logger.info("Redis is running on port ", process.env.REDIS_URL);
+  logger.info(`Post service is running on port ${process.env.POST_SERVICE_URL}`);
 });
 
 

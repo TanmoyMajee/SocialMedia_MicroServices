@@ -13,7 +13,7 @@ const app = express();
 
 connectDB();
 
-const redisClient = new Redis(process.env.REDIS_URL);
+// const redisClient = new Redis(process.env.REDIS_URL);
 
 app.use(helmet());
 app.use(cors());
@@ -26,7 +26,12 @@ app.use((req,res,next) => {
 
 
 
-app.use('/api/posts', routes);
+// here i pass the redis client to the routes , so that i can use it in the controllers 
+// app.use('/api/posts', routes(redisClient));
+app.use('/api/posts', (req,res,next) => {
+  req.redisClient = redisClient;
+  next();
+} , routes);
 
 app.use(errorHandler);
 

@@ -11,7 +11,7 @@ const validateToken = (req,res,next) => {
       // extract token from header as head will be like this "Bearer <token>" so we will split it and get the
       // token from the second index
       token = req.headers.authorization.split(' ')[1];
-     jwt.verify(token, process.env.JWT_SECRET ,(err,decoded) => {
+     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET ,(err,decoded) => {
       if(err){
         logger.warn('Error in validating token:', err);
         return res.status(401).json({message : 'Unauthorized' , success : false } );

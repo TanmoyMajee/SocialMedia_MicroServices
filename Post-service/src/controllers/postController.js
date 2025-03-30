@@ -1,5 +1,6 @@
 const logger = require('../utils/logger');
 const Post = require('../models/Post');
+const {createPostValidation} = require('../utils/validation');
 
 const createPost = async (req, res) => {
   logger.info(' Post endpoint hit');

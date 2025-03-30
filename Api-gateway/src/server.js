@@ -87,7 +87,7 @@ const proxOptionsPostService = {
     // we got the user if from srcReq.user || srcReq is the request of original request [ httpp://localhost:3000/v1/posts  ]
     // so we check the user id from the auth middleware and send it to the post service
     proxyReqOpts.headers['Content-Type'] = 'application/json';
-    proxyReqOpts.headers['x-user-id'] = srcReq.user._id;  // we are sending the user id from the auth middleware to the post service 
+    proxyReqOpts.headers['x-user-id'] = srcReq.user.userId;  // we are sending the user id from the auth middleware to the post service 
     // by setting the x-user-id header, we are sending the user id to the post service
     return proxyReqOpts;
   },

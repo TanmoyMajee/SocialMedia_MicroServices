@@ -13,7 +13,7 @@ const app = express();
 
 connectDB();
 
-// const redisClient = new Redis(process.env.REDIS_URL);
+const redisClient = new Redis(process.env.REDIS_URL);
 
 app.use(helmet());
 app.use(cors());

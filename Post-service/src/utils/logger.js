@@ -8,7 +8,7 @@ const logger = winston.createLogger({
     winston.format.splat(),
     winston.format.errors({ stack: true }),
   ),
-  defaultMeta: { service: 'api-gateway' },
+  defaultMeta: { service: 'Post-service' },
   // This is particularly useful in microservices or multi-module applications to quickly identify which service or part of your system produced the log
   transports: [
     new winston.transports.Console({
@@ -17,8 +17,8 @@ const logger = winston.createLogger({
         winston.format.simple(), // This formats the output to be more readable
       ),
     }),
-      new winston.transports.File({ filename: 'error.log', level: 'error' }),
-      new winston.transports.File({ filename: 'combined.log' }),
+    new winston.transports.File({ filename: 'error.log', level: 'error' }),
+    new winston.transports.File({ filename: 'combined.log' }),
   ],
 });
 // Transports are the different destinations where your logs are sent. In this configuration, there are three transports:

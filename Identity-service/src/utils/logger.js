@@ -18,7 +18,7 @@ const logger = winston.createLogger({
       ),
     }),
       new winston.transports.File({ filename: 'error.log', level: 'error' }),
-      new winston.transports.File({ filename: 'combined.log ' }),
+      new winston.transports.File({ filename: 'combined.log' }),
   ],
 });
 // Transports are the different destinations where your logs are sent. In this configuration, there are three transports:

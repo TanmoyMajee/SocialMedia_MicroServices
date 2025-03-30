@@ -70,6 +70,7 @@ const sensitiveEndpointLimiter = rateLimit({
 
 // apply the rate limiting middleware to sensitive routes
 app.use('/api/auth/register', sensitiveEndpointLimiter);
+app.use('/api/auth/login', sensitiveEndpointLimiter);
 
 // standardHeaders and disabling legacyHeaders, it ensures that clients receive modern, standardized rate limit information in their responses this helps to notify the client about the rate limit status. how many attempts are remaining, when the limit resets, etc.
 

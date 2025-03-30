@@ -12,6 +12,17 @@ const  validateRegistration = (data) => {
   // return { error, value };
 }
 
+const validateLogin = (data) => {
+  const schema = joi.object({
+    email: joi.string().email().required(),
+    password: joi.string().min(6).max(30).required(),
+  });
+  // now return the result of the validation || we can seperate the error and value
+  return schema.validate(data);
+  //  const { error, value } = schema.validate(data);
+  // return { error, value };
+}
+
 // A Joi schema is defined to enforce that:
 
 // username must be a string between 3 and 30 characters.
@@ -23,7 +34,7 @@ const  validateRegistration = (data) => {
 // Validation:
 // The schema.validate(data) method checks the provided data against the schema and returns the result (including any validation errors).
 
-module.exports = {validateRegistration};
+module.exports = {validateRegistration , validateLogin};
 
 
 

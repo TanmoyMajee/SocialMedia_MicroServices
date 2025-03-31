@@ -32,6 +32,8 @@ app.use('/api/posts', (req,res,next) => {
   req.redisClient = redisClient;
   next();
 } , routes);
+// we need redis client to cahche the get posts request 
+
 
 app.use(errorHandler);
 

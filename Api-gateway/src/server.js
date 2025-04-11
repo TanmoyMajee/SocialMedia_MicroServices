@@ -66,7 +66,7 @@ const proxyOptions = {
   }
 }
 
-// setting path for each service
+// setting path Identity service  | auth service
 
 app.use('/v1/auth', proxy(process.env.IDENTITY_SERVICE_URL, proxyOptions));
 
@@ -97,9 +97,29 @@ const proxOptionsPostService = {
   }
 }
 
-// here we need to pass the request to authMiddleware first and then to the proxy
-app.use('/v1/posts', validateToken, proxy(process.env.POST_SERVICE_URL, proxOptionsPostService));
 
+const conditionalAuth = (req, res, next) => {
+// we dont need to protect the [ get-post ] route as it is public
+   if (req.path === '/getposts') {
+    return next();
+  } 
+  // If the path starts with '/getpostbyid', skip auth.
+  // This is a basic check; you could enhance this with more robust pattern matching if needed.
+  if (req.path.startsWith('/getpostbyid')) {
+    return next();
+  }
+
+    return validateToken(req, res, next);
+}
+// here we need to pass the request to authMiddleware first and then to the proxy
+app.use('/v1/posts',  conditionalAuth , proxy(process.env.POST_SERVICE_URL, proxOptionsPostService));
+
+
+
+
+
+// error handling middleware will be used at last to catch all the errors from the above middleware and routes
+// and send the response to the client
 app.use(errorHandler);
 
 app.listen(PORT, () => {
